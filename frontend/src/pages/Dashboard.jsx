@@ -40,7 +40,11 @@ export default function Dashboard() {
   const overdueCount = tasks.filter((t) => {
     if (!t.dueDate || t.status === 'completed') return false;
     try {
-      return new Date(t.dueDate) < now;
+      const due = new Date(t.dueDate);
+      if (isNaN(due.getTime())) return false;
+      // Evaluate overdue against end of due date (23:59:59) so tasks due today are not flagged prematurely
+      const dueEndOfDay = new Date(due.getFullYear(), due.getMonth(), due.getDate(), 23, 59, 59, 999);
+      return dueEndOfDay < now;
     } catch {
       return false;
     }

@@ -1,5 +1,5 @@
 // src/components/Sidebar.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useToast } from '../context/ToastContext.jsx';
@@ -18,6 +18,16 @@ export default function Sidebar() {
   };
 
   const closeMobile = () => setMobileOpen(false);
+
+  // Close drawer on Escape key press
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileOpen]);
 
   const getInitials = (name) => {
     if (!name) return 'U';
@@ -68,6 +78,26 @@ export default function Sidebar() {
             <span className="brand-title">TaskFlow</span>
             <span className="brand-subtitle">Workspace</span>
           </div>
+          {mobileOpen && (
+            <button
+              type="button"
+              onClick={closeMobile}
+              className="btn-drawer-close"
+              aria-label="Close sidebar"
+              style={{
+                marginLeft: 'auto',
+                background: 'none',
+                border: 'none',
+                fontSize: '1.25rem',
+                cursor: 'pointer',
+                color: 'var(--text-secondary)',
+                padding: '4px 8px',
+                lineHeight: 1,
+              }}
+            >
+              ✕
+            </button>
+          )}
         </div>
 
         <nav className="sidebar-nav">

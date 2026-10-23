@@ -1,4 +1,5 @@
-// src/components/ConfirmDialog.jsx
+import { useEffect } from 'react';
+
 export default function ConfirmDialog({
   isOpen,
   title = 'Confirm Action',
@@ -10,6 +11,17 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && !isLoading) {
+        onCancel();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isLoading, onCancel]);
+
   if (!isOpen) return null;
 
   return (

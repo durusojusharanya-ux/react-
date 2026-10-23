@@ -49,12 +49,20 @@ export default function CreateTask() {
     setApiError('');
 
     try {
+      let validDueDate = null;
+      if (formData.dueDate) {
+        const parsed = new Date(formData.dueDate);
+        if (!isNaN(parsed.getTime())) {
+          validDueDate = parsed.toISOString();
+        }
+      }
+
       const payload = {
         title: formData.title.trim(),
         description: formData.description.trim() || null,
         status: formData.status,
         priority: formData.priority,
-        dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
+        dueDate: validDueDate,
       };
 
       const res = await tasksAPI.create(payload);

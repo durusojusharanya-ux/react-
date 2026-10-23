@@ -52,6 +52,32 @@ export default function KanbanBoard() {
     }
   };
 
+  const [draggedTaskId, setDraggedTaskId] = useState(null);
+
+  const handleDragStart = (e, taskId) => {
+    setDraggedTaskId(taskId);
+    e.dataTransfer.setData('text/plain', String(taskId));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, targetStatus) => {
+    e.preventDefault();
+    const idStr = e.dataTransfer.getData('text/plain') || String(draggedTaskId);
+    const taskId = parseInt(idStr, 10);
+    if (taskId) {
+      const task = tasks.find((t) => t.id === taskId);
+      if (task && task.status !== targetStatus) {
+        handleStatusChange(taskId, targetStatus);
+      }
+    }
+    setDraggedTaskId(null);
+  };
+
   const formatDate = (isoString) => {
     if (!isoString) return null;
     try {
@@ -108,7 +134,12 @@ export default function KanbanBoard() {
           {COLUMNS.map((col) => {
             const colTasks = tasks.filter((t) => t.status === col.id);
             return (
-              <div key={col.id} className="kanban-column">
+              <div
+                key={col.id}
+                className="kanban-column"
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, col.id)}
+              >
                 <div
                   className="kanban-column-header"
                   style={{ borderTop: `3px solid ${col.color}` }}
@@ -132,7 +163,13 @@ export default function KanbanBoard() {
                     <div className="kanban-empty">No tasks in {col.title.toLowerCase()}</div>
                   ) : (
                     colTasks.map((task) => (
-                      <div key={task.id} className="kanban-card">
+                      <div
+                        key={task.id}
+                        className="kanban-card"
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, task.id)}
+                        style={{ cursor: 'grab' }}
+                      >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '8px' }}>
                           <Link
                             to={`/tasks/${task.id}`}

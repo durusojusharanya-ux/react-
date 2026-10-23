@@ -44,7 +44,9 @@ The backend delivers a secure REST API with JWT-based authentication, user passw
 
 | View | Screenshot | Description |
 | :--- | :---: | :--- |
-| **Dashboard Overview** | ![Dashboard Overview](docs/screenshots/dashboard_overview.png) | Real-time metrics (Total, Pending, In Progress, Completed, Overdue), progress bar, recent tasks, and activity timeline. |
+| **Dashboard Overview** | ![Dashboard Overview](docs/screenshots/dashboard_overview.png) | Symmetrical 5-metric cards, progress bar, recent tasks, and real-time activity timeline. |
+| **Kanban Task Board** | ![Kanban Board](docs/screenshots/kanban_board.png) | Interactive visual workflow board with 3 status columns, drag & drop, and dropdown controls. |
+| **All Tasks & Filters** | ![All Tasks](docs/screenshots/task_list_filters.png) | Real-time keyword search, status and priority filters, sorting, and quick status controls. |
 | **Task Details View** | ![Task Details](docs/screenshots/task_details.png) | Individual task view with status & priority badges, description, and metadata timestamps. |
 | **Task Edit Form** | ![Edit Task](docs/screenshots/edit_task_page.png) | Validated form with prefilled task data and instant update mutation. |
 | **Mobile Drawer Navigation** | ![Mobile View](docs/screenshots/mobile_view.png) | Tested at 375px mobile viewport with responsive sidebar drawer and clean layout. |

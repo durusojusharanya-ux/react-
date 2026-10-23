@@ -102,6 +102,18 @@ export default function TaskList() {
       return 0;
     });
 
+  const handleStatusChange = async (taskId, newStatus) => {
+    try {
+      await tasksAPI.update(taskId, { status: newStatus });
+      setTasks((prev) =>
+        prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t))
+      );
+      toast.success(`Task status changed to ${newStatus.replace('-', ' ')}`);
+    } catch (err) {
+      toast.error(err.message || 'Failed to update task status.');
+    }
+  };
+
   const handleDeleteConfirm = async () => {
     if (!taskToDelete) return;
     setIsDeleting(true);
@@ -285,6 +297,18 @@ export default function TaskList() {
               </div>
 
               <div className="task-card-actions">
+                <select
+                  value={task.status}
+                  onChange={(e) => handleStatusChange(task.id, e.target.value)}
+                  className="form-select"
+                  style={{ padding: '3px 8px', fontSize: '12px', width: 'auto', marginRight: 'auto' }}
+                  aria-label={`Update status for ${task.title}`}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+
                 <Link to={`/tasks/${task.id}`} className="btn btn-outline btn-sm">
                   Details
                 </Link>
