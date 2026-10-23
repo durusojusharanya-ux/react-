@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --experimental-sqlite src/server.js",
-    "dev": "nodemon --exec \"node --experimental-sqlite\" src/server.js"
+    "dev": "nodemon --exec \"node --experimental-sqlite\" src/server.js",
+    "test": "node --experimental-sqlite --test test/api.test.js"
   },
   "keywords": ["api", "crud", "express", "sqlite", "jwt", "authentication"],
   "author": "",

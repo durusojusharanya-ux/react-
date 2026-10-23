@@ -1,13 +1,14 @@
-// src/pages/EditTask.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { tasksAPI } from '../services/api.js';
+import { useToast } from '../context/ToastContext.jsx';
 import Loading from '../components/Loading.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 
 export default function EditTask() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -86,11 +87,13 @@ export default function EditTask() {
       };
 
       await tasksAPI.update(id, payload);
+      toast.success('Task updated successfully!');
       setSuccessMsg('Task updated successfully! Redirecting...');
       setTimeout(() => {
         navigate(`/tasks/${id}`, { replace: true });
-      }, 1000);
+      }, 700);
     } catch (err) {
+      toast.error(err.message || 'Failed to update task.');
       setApiError(err.message || 'Failed to update task.');
       setSubmitting(false);
     }

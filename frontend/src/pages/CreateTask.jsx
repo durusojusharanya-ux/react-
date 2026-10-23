@@ -1,11 +1,12 @@
-// src/pages/CreateTask.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { tasksAPI } from '../services/api.js';
+import { useToast } from '../context/ToastContext.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 
 export default function CreateTask() {
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -57,6 +58,7 @@ export default function CreateTask() {
       };
 
       const res = await tasksAPI.create(payload);
+      toast.success('Task created successfully!');
       const newTaskId = res.data?.task?.id;
       if (newTaskId) {
         navigate(`/tasks/${newTaskId}`, { replace: true });

@@ -318,6 +318,30 @@
       ]
     },
     {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "Get Recent Activities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/activities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "activities"]
+            },
+            "description": "Fetch audit timeline of user task actions (created, updated, status_changed, deleted)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Error Cases",
       "item": [
         {

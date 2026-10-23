@@ -62,11 +62,40 @@ export function initializeDatabase() {
       )
     `);
 
+    // Create activities table for user timeline
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS activities (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId      INTEGER NOT NULL,
+        action      TEXT    NOT NULL,
+        details     TEXT    NOT NULL,
+        taskId      INTEGER,
+        taskTitle   TEXT,
+        createdAt   TEXT    NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+
     console.log(`✅ SQLite database initialized at: ${dbPath}`);
     return db;
   } catch (error) {
     console.error('❌ Failed to initialize database:', error.message);
     process.exit(1);
+  }
+}
+
+/**
+ * Safely record an audit activity log entry for a user.
+ */
+export function logActivity(userId, action, details, taskId = null, taskTitle = null) {
+  try {
+    const database = getDb();
+    database.prepare(`
+      INSERT INTO activities (userId, action, details, taskId, taskTitle)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(userId, action, details, taskId, taskTitle);
+  } catch (err) {
+    console.error('[ACTIVITY LOG ERROR]', err.message);
   }
 }
 

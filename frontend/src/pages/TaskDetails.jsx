@@ -1,7 +1,7 @@
-// src/pages/TaskDetails.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { tasksAPI } from '../services/api.js';
+import { useToast } from '../context/ToastContext.jsx';
 import Loading from '../components/Loading.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 import ConfirmDialog from '../components/ConfirmDialog.jsx';
@@ -9,6 +9,7 @@ import ConfirmDialog from '../components/ConfirmDialog.jsx';
 export default function TaskDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const [task, setTask] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,8 +38,10 @@ export default function TaskDetails() {
     setIsDeleting(true);
     try {
       await tasksAPI.delete(id);
+      toast.success(`Task "${task?.title || id}" deleted successfully.`);
       navigate('/tasks', { replace: true });
     } catch (err) {
+      toast.error(err.message || 'Failed to delete task.');
       setError(err.message || 'Failed to delete task.');
       setIsDeleting(false);
       setShowDeleteModal(false);

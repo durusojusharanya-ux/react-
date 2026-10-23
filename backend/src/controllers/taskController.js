@@ -1,4 +1,4 @@
-import { getDb } from '../config/db.js';
+import { getDb, logActivity } from '../config/db.js';
 
 // node:sqlite only accepts strings, numbers, bigint, null, or Uint8Array.
 // express-validator's .toDate() converts dueDate to a Date object — convert it back.
@@ -37,6 +37,9 @@ export function createTask(req, res, next) {
     const task = db
       .prepare('SELECT * FROM tasks WHERE id = ?')
       .get(result.lastInsertRowid);
+
+    // Record activity
+    logActivity(userId, 'created', `Created task "${task.title}"`, task.id, task.title);
 
     return res.status(201).json({
       success: true,
@@ -158,6 +161,25 @@ export function updateTask(req, res, next) {
 
     const updatedTask = db.prepare('SELECT * FROM tasks WHERE id = ?').get(taskId);
 
+    // Record activity: check whether status changed
+    if (existing.status !== updatedTask.status) {
+      logActivity(
+        userId,
+        'status_changed',
+        `Moved task "${updatedTask.title}" to ${updatedTask.status}`,
+        updatedTask.id,
+        updatedTask.title
+      );
+    } else {
+      logActivity(
+        userId,
+        'updated',
+        `Updated details for task "${updatedTask.title}"`,
+        updatedTask.id,
+        updatedTask.title
+      );
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Task updated successfully.',
@@ -175,17 +197,23 @@ export function deleteTask(req, res, next) {
     const userId = req.userId;
     const db = getDb();
 
-    // Ownership enforced in WHERE clause
-    const result = db
-      .prepare('DELETE FROM tasks WHERE id = ? AND userId = ?')
-      .run(taskId, userId);
+    // Verify task exists and is owned by this user
+    const existing = db
+      .prepare('SELECT title FROM tasks WHERE id = ? AND userId = ?')
+      .get(taskId, userId);
 
-    if (result.changes === 0) {
+    if (!existing) {
       return res.status(404).json({
         success: false,
         message: 'Task not found.',
       });
     }
+
+    // Ownership enforced in WHERE clause
+    db.prepare('DELETE FROM tasks WHERE id = ? AND userId = ?').run(taskId, userId);
+
+    // Record activity
+    logActivity(userId, 'deleted', `Deleted task "${existing.title}"`, taskId, existing.title);
 
     return res.status(200).json({
       success: true,

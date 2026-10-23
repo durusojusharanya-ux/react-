@@ -64,3 +64,9 @@ export const tasksAPI = {
   update:   (id, data) => request('PUT', `/api/tasks/${id}`, data, true),
   delete:   (id)   => request('DELETE', `/api/tasks/${id}`, null, true),
 };
+
+// ─── Activity Endpoints ────────────────────────────────────────────────────────
+export const activitiesAPI = {
+  getRecent: (limit = 15) => request('GET', `/api/activities?limit=${limit}`, null, true),
+};
+
