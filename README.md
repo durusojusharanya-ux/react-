@@ -173,8 +173,8 @@ Before running the application, ensure you have installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/durusojusharanya-ux/crud.git
-cd crud
+git clone https://github.com/durusojusharanya-ux/react-.git
+cd react-
 ```
 
 ---
@@ -386,13 +386,13 @@ npm run preview
 | **Confirmation Dialog** | Modal dialog with backdrop and loading state before deletion | Verified in task list and task details | ✅ Passed |
 | **Responsive Sidebar & Mobile Drawer** | Collapsible navigation with 375px mobile compatibility | Verified via browser automation with 0 horizontal overflow | ✅ Passed |
 | **Production Build** | `vite build` completed cleanly | 41 modules transformed, 0 errors | ✅ Passed |
-| **GitHub Submission** | Clean repository history, `.gitignore` guarding secrets, pushed to `main` | Verified at https://github.com/durusojusharanya-ux/crud | ✅ Passed |
+| **GitHub Submission** | Clean repository history, `.gitignore` guarding secrets, pushed to `main` | Verified at https://github.com/durusojusharanya-ux/react- | ✅ Passed |
 
 ---
 
 ## 👩‍💻 Author & Submission
 - **Intern Name**: Sharanya
-- **Repository**: [https://github.com/durusojusharanya-ux/crud](https://github.com/durusojusharanya-ux/crud)
+- **Repository**: [https://github.com/durusojusharanya-ux/react-](https://github.com/durusojusharanya-ux/react-)
 - **Branch**: `main`
 - **Submission Date**: October 2026
 - **Readiness**: 100% Ready for Evaluation
