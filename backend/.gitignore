@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# SQLite database files
+data/tasks.db
+data/tasks.db-shm
+data/tasks.db-wal
+data/tasks.db-journal
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo

@@ -1,148 +1,300 @@
-# Task Management API
+# 🚀 TaskFlow — Full-Stack Task Management System
+### Integrated Internship Project: Task 2 (CRUD REST API) + Task 3 (Responsive React Frontend)
 
-A production-quality CRUD REST API with JWT User Authentication built with Node.js, Express.js, and SQLite. Designed as an internship assignment demonstrating real-world backend development practices.
-
-## Features
-
-- 🔐 JWT-based user authentication (register, login, profile)
-- ✅ Full task CRUD — create, read, update, delete
-- 🗄️ SQLite database — zero cloud setup, works 100% locally
-- 🛡️ Task ownership enforcement — users can only access their own tasks
-- 🔒 Bcrypt password hashing — passwords never stored in plain text
-- 📋 Input validation with express-validator
-- 🎯 Consistent JSON responses with proper HTTP status codes
-- 🚫 SQL injection prevention via parameterized queries
-- 📦 Postman collection included for easy testing
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B%20%7C%2022%2B-green?logo=node.js)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express-4.18-lightgrey?logo=express)](https://expressjs.com/)
+[![SQLite](https://img.shields.io/badge/Database-SQLite%203-blue?logo=sqlite)](https://www.sqlite.org/)
+[![JWT](https://img.shields.io/badge/Auth-JWT-orange?logo=jsonwebtokens)](https://jwt.io/)
+[![React](https://img.shields.io/badge/Frontend-React%2019-cyan?logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Bundler-Vite%208-purple?logo=vite)](https://vitejs.dev/)
+[![License](https://img.shields.io/badge/License-ISC-blue.svg)](LICENSE)
 
 ---
 
-## Prerequisites
+## 📌 Project Overview
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- [npm](https://www.npmjs.com/) (comes with Node.js)
-- [Postman](https://www.postman.com/downloads/) (for testing)
-- No database account, no cloud setup, no API keys needed
+**TaskFlow** is a modern, production-ready, full-stack task management web application designed and built to complete both **Internship Task 2** (Backend RESTful API with Authentication & Database Persistence) and **Internship Task 3** (Responsive, Dynamic React Single-Page Application).
+
+The backend delivers a secure REST API with JWT-based authentication, user password hashing with bcrypt, input validation with `express-validator`, and persistent data storage using **SQLite** with Write-Ahead Logging (WAL) and cascading foreign keys. The frontend is built with **React 19** and **Vite**, featuring dynamic dashboard metrics, client-side route protection, responsive mobile/desktop interfaces, search/filter capabilities, form validation, and full CRUD operations.
 
 ---
 
-## Installation
+## 🎯 Internship Objectives
 
+| Internship Task | Scope | Status |
+| :--- | :--- | :---: |
+| **Task 2: Backend REST API** | Build a robust Express.js API with SQLite database persistence, JWT authentication, user registration/login, password hashing, and complete CRUD endpoints with input validation. | ✅ **Complete & Tested** |
+| **Task 3: React Frontend** | Develop a responsive React application consuming the Task 2 REST API with state management, client validation, protected routing, loading/error states, and polished UI design. | ✅ **Complete & Tested** |
+
+---
+
+## ✨ Features
+
+### 🔐 Backend API (Task 2)
+- **User Authentication**:
+  - Secure registration (`POST /api/auth/register`) with email normalization and duplicate check.
+  - Login (`POST /api/auth/login`) with bcrypt hash verification (12 salt rounds) and JWT signing.
+  - Profile retrieval (`GET /api/auth/me`) using the JWT bearer token.
+  - Strict password exclusion: passwords are never stored in plain text and are always stripped from JSON responses.
+- **Full CRUD Task Management**:
+  - **Create**: Add tasks with title, description, status (`pending`, `in-progress`, `completed`), priority (`low`, `medium`, `high`), and optional due date (`POST /api/tasks`).
+  - **Read All**: Retrieve tasks owned by the authenticated user with optional `?status=` and `?priority=` filters (`GET /api/tasks`).
+  - **Read Single**: Fetch an owned task by ID (`GET /api/tasks/:id`).
+  - **Update**: Update task properties (`PUT /api/tasks/:id`).
+  - **Delete**: Remove an owned task (`DELETE /api/tasks/:id`).
+- **Data Isolation & Ownership**: All queries are parameterized (`?`) to prevent SQL injection, and enforce user ownership in SQL (`WHERE id = ? AND userId = ?`).
+- **SQLite Engine**: Zero-configuration, file-based persistence using Node.js built-in SQLite (`DatabaseSync`), configured with `PRAGMA journal_mode = WAL` and `PRAGMA foreign_keys = ON`.
+- **Validation & Error Handling**: Request bodies and parameters are strictly validated with centralized 400, 401, 403, 404, 409, and 500 JSON error responses.
+
+### 💻 Frontend Application (Task 3)
+- **Modern React Architecture**: Built with React 19, Vite, and React Router DOM v7.
+- **Centralized Authentication Context**: Global `AuthContext` managing tokens in `localStorage`, auto-verifying user profile on page load, and handling seamless login/logout state transitions.
+- **Protected Routing**: Custom `ProtectedRoute` component preventing unauthenticated access to private dashboard and task routes.
+- **Interactive Dashboard**: Real-time KPI summary cards (Total, Pending, In-Progress, Completed, High Priority) computed directly from API data, with quick actions and recent tasks preview.
+- **Dynamic Task Board**:
+  - Search tasks by title or description keywords.
+  - Filter tasks by status and priority.
+  - Color-coded badges for status and priority.
+  - Custom delete confirmation dialog modal with backdrop to prevent accidental removals.
+- **Form Validation & UX**:
+  - Client-side validation with real-time feedback for missing/invalid fields.
+  - Show/hide password toggles.
+  - Inline loading spinners and full-screen loading states.
+  - Error banners with retry buttons on network or server errors.
+  - Friendly empty states when no records exist.
+- **Responsive Design**: Designed with CSS variables, custom typography (Google Fonts Inter), and media queries supporting desktop, tablet, and mobile (with hamburger navigation).
+
+---
+
+## 🛠️ Technology Stack
+
+```
+TaskFlow Architecture
+├── Backend (Task 2)
+│   ├── Runtime: Node.js (v18+ or v22+)
+│   ├── Framework: Express.js (v4.18)
+│   ├── Database: SQLite 3 (node:sqlite with WAL mode)
+│   ├── Auth & Crypto: JSON Web Tokens (jsonwebtoken) & bcryptjs
+│   ├── Validation: express-validator
+│   └── Config: dotenv & cors
+│
+└── Frontend (Task 3)
+    ├── Framework: React (v19)
+    ├── Tooling / Bundler: Vite (v8)
+    ├── Routing: React Router DOM (v7)
+    ├── HTTP Client: Fetch API (modular service wrapper)
+    └── Styling: Vanilla CSS3 (Custom Design System, Responsive Media Queries)
+```
+
+---
+
+## 📂 Project Structure
+
+```
+taskflow-project/
+├── README.md                      # Comprehensive project documentation
+├── .gitignore                     # Root gitignore (ignoring node_modules, .env, *.db)
+├── package.json                   # Root package runner scripts
+│
+├── backend/                       # Task 2: Backend REST API
+│   ├── package.json
+│   ├── .env.example               # Backend environment template
+│   ├── data/                      # Persistent SQLite database storage
+│   │   ├── .gitkeep
+│   │   └── tasks.db               # SQLite database file (auto-generated)
+│   ├── postman/                   # Postman API Collection
+│   │   └── Task-Management-API.postman_collection.json
+│   └── src/
+│       ├── server.js              # Application entry point & port listener
+│       ├── app.js                 # Express app configuration & middleware
+│       ├── config/
+│       │   └── db.js              # SQLite connection & schema initialization
+│       ├── controllers/
+│       │   ├── authController.js  # Register, login, getMe handlers
+│       │   └── taskController.js  # CRUD handlers with ownership enforcement
+│       ├── middleware/
+│       │   ├── authMiddleware.js  # JWT verification middleware
+│       │   ├── errorMiddleware.js # Centralized 404 & error handlers
+│       │   └── validateRequest.js # express-validator error mapper
+│       ├── routes/
+│       │   ├── authRoutes.js      # /api/auth routes
+│       │   └── taskRoutes.js      # /api/tasks routes
+│       └── validators/
+│           ├── authValidators.js  # Validation rules for auth
+│           └── taskValidators.js  # Validation rules for tasks & IDs
+│
+└── frontend/                      # Task 3: React Frontend Application
+    ├── package.json
+    ├── vite.config.js             # Vite configuration with React plugin
+    ├── index.html                 # HTML5 template with Google Fonts (Inter)
+    ├── .env.example               # Frontend environment template
+    └── src/
+        ├── main.jsx               # Application root mounting React
+        ├── App.jsx                # Router declaration & layout structure
+        ├── services/
+        │   └── api.js             # Reusable Fetch API client with JWT injection
+        ├── context/
+        │   └── AuthContext.jsx    # React Context for authentication state
+        ├── components/
+        │   ├── Navbar.jsx         # Responsive navigation bar with mobile toggle
+        │   ├── ProtectedRoute.jsx # Route guard for private pages
+        │   ├── Loading.jsx        # Accessible loading spinner component
+        │   ├── ErrorMessage.jsx   # Alert component with retry action
+        │   └── ConfirmDialog.jsx  # Confirmation modal for delete operations
+        ├── pages/
+        │   ├── Login.jsx          # Login view with validation & show/hide pwd
+        │   ├── Register.jsx       # Registration view with validation
+        │   ├── Dashboard.jsx      # Metrics overview & quick actions
+        │   ├── TaskList.jsx       # Task cards, search, filter & delete modal
+        │   ├── TaskDetails.jsx    # Single task view with complete metadata
+        │   ├── CreateTask.jsx     # Validated task creation form
+        │   ├── EditTask.jsx       # Prefilled task update form
+        │   └── NotFound.jsx       # Custom 404 page
+        └── styles/
+            └── global.css         # Custom CSS design system & media queries
+```
+
+---
+
+## ⚙️ Prerequisites
+
+Before running the application, ensure you have installed:
+- **Node.js**: `v18.0.0` or higher (Node.js `v22+` recommended for built-in SQLite support)
+- **npm**: `v9.0.0` or higher
+- **Git**: For version control
+
+Verify versions in your terminal:
 ```bash
-# 1. Clone the repository (or navigate to the project folder)
-cd task-management-api
-
-# 2. Install dependencies
-npm install
-
-# 3. Create your environment file
-copy .env.example .env        # Windows
-# cp .env.example .env        # macOS / Linux
+node -v
+npm -v
 ```
 
 ---
 
-## Environment Setup
+## 🚀 Quick Start Guide (Beginner Friendly)
 
-Open `.env` and update the values:
-
-```env
-PORT=5000
-NODE_ENV=development
-JWT_SECRET=replace_with_a_long_random_secret_at_least_32_characters
-JWT_EXPIRES_IN=1d
-```
-
-> **Important:** Change `JWT_SECRET` to a long, random string before deploying. Never commit `.env` to Git.
-
-**Generate a strong secret (optional):**
+### 1. Clone the Repository
 ```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+git clone https://github.com/durusojusharanya-ux/crud.git
+cd crud
 ```
 
 ---
 
-## How SQLite Works (No Setup Needed)
+### 2. Backend Setup & Startup (Terminal 1)
 
-When you run `npm run dev`, the server:
-
-1. Checks if the `data/` folder exists — creates it if not.
-2. Opens (or creates) `data/tasks.db`.
-3. Runs `CREATE TABLE IF NOT EXISTS` for `users` and `tasks`.
-4. Foreign keys and WAL mode are enabled automatically.
-
-**You never need to run SQL commands manually.**
-
----
-
-## Starting the Server
-
-```bash
-# Development mode (auto-restarts on file changes)
-npm run dev
-
-# Production mode
-npm start
-```
-
-You should see:
-```
-✅ SQLite database initialized at: .../data/tasks.db
-🚀 Server running on http://localhost:5000
-📋 Health check: http://localhost:5000/api/health
-```
-
----
-
-## API Endpoints
-
-### Base URL
-```
-http://localhost:5000
-```
-
-### Health Check
-
-| Method | Endpoint       | Auth | Description          |
-|--------|----------------|------|----------------------|
-| GET    | `/api/health`  | No   | Check server status  |
-
-### Authentication
-
-| Method | Endpoint              | Auth | Description                    |
-|--------|-----------------------|------|--------------------------------|
-| POST   | `/api/auth/register`  | No   | Create a new user account      |
-| POST   | `/api/auth/login`     | No   | Log in and receive a JWT       |
-| GET    | `/api/auth/me`        | Yes  | Get authenticated user profile |
-
-### Tasks
-
-| Method | Endpoint          | Auth | Description                       |
-|--------|-------------------|------|-----------------------------------|
-| POST   | `/api/tasks`      | Yes  | Create a new task                 |
-| GET    | `/api/tasks`      | Yes  | List all your tasks               |
-| GET    | `/api/tasks/:id`  | Yes  | Get one task by ID                |
-| PUT    | `/api/tasks/:id`  | Yes  | Update an owned task              |
-| DELETE | `/api/tasks/:id`  | Yes  | Delete an owned task              |
-
-**Optional query parameters for GET /api/tasks:**
-- `?status=pending` — filter by status (`pending`, `in-progress`, `completed`)
-- `?priority=high` — filter by priority (`low`, `medium`, `high`)
+1. Open a terminal and enter the `backend` directory:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create your `.env` configuration file:
+   - On Windows (PowerShell):
+     ```powershell
+     Copy-Item .env.example .env
+     ```
+   - On macOS / Linux:
+     ```bash
+     cp .env.example .env
+     ```
+   Verify `.env` contents:
+   ```env
+   PORT=5000
+   NODE_ENV=development
+   JWT_SECRET=replace_with_a_long_random_secret_string
+   JWT_EXPIRES_IN=1d
+   ```
+4. Start the backend server:
+   ```bash
+   npm start
+   ```
+   *For live auto-reloading during development:*
+   ```bash
+   npm run dev
+   ```
+5. You should see:
+   ```text
+   ✅ SQLite database initialized at: .../backend/data/tasks.db
+   🚀 Server running on http://localhost:5000
+   📋 Health check: http://localhost:5000/api/health
+   🌍 Environment: development
+   ```
 
 ---
 
-## Example Request Bodies & Responses
+### 3. Frontend Setup & Startup (Terminal 2)
 
-### Register — `POST /api/auth/register`
+1. Open a **second terminal** and enter the `frontend` directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create your `.env` configuration file:
+   - On Windows (PowerShell):
+     ```powershell
+     Copy-Item .env.example .env
+     ```
+   - On macOS / Linux:
+     ```bash
+     cp .env.example .env
+     ```
+   Verify `.env` contents:
+   ```env
+   VITE_API_BASE_URL=http://localhost:5000
+   ```
+4. Start the React development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to:
+   ```
+   http://localhost:5173
+   ```
 
-**Request:**
+---
+
+## 📡 REST API Reference
+
+Base URL: `http://localhost:5000/api`
+
+### 1. Health Check
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `GET` | `/health` | No | Server heartbeat and timestamp |
+
+**Response (200 OK):**
 ```json
 {
-  "name": "Jane Doe",
-  "email": "jane@example.com",
-  "password": "password123"
+  "success": true,
+  "message": "Task Management API is running.",
+  "timestamp": "2026-10-23T15:03:33.178Z"
 }
 ```
 
+---
+
+### 2. Authentication Endpoints
+| Method | Endpoint | Auth | Description |
+| :--- | :--- | :---: | :--- |
+| `POST` | `/auth/register` | No | Register a new user |
+| `POST` | `/auth/login` | No | Login and receive a signed JWT |
+| `GET` | `/auth/me` | Bearer JWT | Retrieve profile of authenticated user |
+
+#### Register (`POST /api/auth/register`)
+**Request Body:**
+```json
+{
+  "name": "Sharanya Dev",
+  "email": "sharanya@example.com",
+  "password": "Password@123"
+}
+```
 **Response (201 Created):**
 ```json
 {
@@ -151,57 +303,63 @@ http://localhost:5000
   "data": {
     "user": {
       "id": 1,
-      "name": "Jane Doe",
-      "email": "jane@example.com",
-      "createdAt": "2025-01-01T10:00:00.000Z",
-      "updatedAt": "2025-01-01T10:00:00.000Z"
+      "name": "Sharanya Dev",
+      "email": "sharanya@example.com",
+      "createdAt": "2026-10-23T15:03:55.748Z",
+      "updatedAt": "2026-10-23T15:03:55.748Z"
     },
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
 
-### Login — `POST /api/auth/login`
-
-**Request:**
+#### Login (`POST /api/auth/login`)
+**Request Body:**
 ```json
 {
-  "email": "jane@example.com",
-  "password": "password123"
+  "email": "sharanya@example.com",
+  "password": "Password@123"
 }
 ```
-
 **Response (200 OK):**
 ```json
 {
   "success": true,
   "message": "Logged in successfully.",
   "data": {
-    "user": { "id": 1, "name": "Jane Doe", "email": "jane@example.com" },
+    "user": {
+      "id": 1,
+      "name": "Sharanya Dev",
+      "email": "sharanya@example.com"
+    },
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
   }
 }
 ```
 
-### Create Task — `POST /api/tasks`
+---
 
-**Request headers:**
-```
-Authorization: Bearer <your-jwt-token>
-Content-Type: application/json
-```
+### 3. Task Management Endpoints (All require `Authorization: Bearer <TOKEN>`)
 
-**Request body:**
+| Method | Endpoint | Description | Query Parameters |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/tasks` | Create a new task | — |
+| `GET` | `/tasks` | List all tasks owned by current user | `?status=pending` & `?priority=high` |
+| `GET` | `/tasks/:id` | Get details of a single task by ID | — |
+| `PUT` | `/tasks/:id` | Update an existing task | — |
+| `DELETE` | `/tasks/:id` | Permanently delete an existing task | — |
+
+#### Create Task (`POST /api/tasks`)
+**Request Body:**
 ```json
 {
-  "title": "Complete internship assignment",
-  "description": "Build a CRUD REST API with Node.js and SQLite",
+  "title": "Complete Internship Task 3 Frontend",
+  "description": "Implement React UI with state management and API integration.",
   "status": "in-progress",
   "priority": "high",
-  "dueDate": "2025-12-31"
+  "dueDate": "2026-12-31"
 }
 ```
-
 **Response (201 Created):**
 ```json
 {
@@ -210,204 +368,147 @@ Content-Type: application/json
   "data": {
     "task": {
       "id": 1,
-      "title": "Complete internship assignment",
-      "description": "Build a CRUD REST API with Node.js and SQLite",
+      "title": "Complete Internship Task 3 Frontend",
+      "description": "Implement React UI with state management and API integration.",
       "status": "in-progress",
       "priority": "high",
-      "dueDate": "2025-12-31T00:00:00.000Z",
+      "dueDate": "2026-12-31T00:00:00.000Z",
       "userId": 1,
-      "createdAt": "2025-01-01T10:00:00.000Z",
-      "updatedAt": "2025-01-01T10:00:00.000Z"
+      "createdAt": "2026-10-23T15:20:00.000Z",
+      "updatedAt": "2026-10-23T15:20:00.000Z"
     }
   }
 }
 ```
 
-### Update Task — `PUT /api/tasks/1`
-
-**Request body (only include fields to change):**
+#### Update Task (`PUT /api/tasks/:id`)
+**Request Body (Partial updates supported):**
 ```json
 {
-  "status": "completed"
+  "status": "completed",
+  "priority": "medium"
 }
 ```
-
 **Response (200 OK):**
 ```json
 {
   "success": true,
   "message": "Task updated successfully.",
-  "data": { "task": { ... } }
+  "data": {
+    "task": {
+      "id": 1,
+      "title": "Complete Internship Task 3 Frontend",
+      "status": "completed",
+      "priority": "medium",
+      "updatedAt": "2026-10-23T15:25:00.000Z"
+    }
+  }
+}
+```
+
+#### Delete Task (`DELETE /api/tasks/:id`)
+**Response (200 OK):**
+```json
+{
+  "success": true,
+  "message": "Task deleted successfully."
 }
 ```
 
 ---
 
-## JWT Authentication
+## 🛡️ HTTP Status Code Standards
 
-Protected endpoints require this header:
-
-```
-Authorization: Bearer <token>
-```
-
-- Tokens expire after `1d` (configurable via `JWT_EXPIRES_IN` in `.env`).
-- A `401` response means the token is missing, invalid, or expired.
-- Log in again to get a new token.
-
----
-
-## HTTP Status Codes
-
-| Code | Meaning                          |
-|------|----------------------------------|
-| 200  | Success (read, update, delete)   |
-| 201  | Created (register, create task)  |
-| 400  | Bad request / validation error   |
-| 401  | Unauthenticated                  |
-| 403  | Forbidden                        |
-| 404  | Not found                        |
-| 409  | Conflict (duplicate email)       |
-| 500  | Internal server error            |
+| Status Code | Description | Scenario |
+| :---: | :--- | :--- |
+| `200 OK` | Request succeeded | Successful GET, PUT, DELETE operations and login |
+| `201 Created` | Resource created | Successful user registration and task creation |
+| `400 Bad Request` | Invalid input | Validation error in request body or invalid task ID |
+| `401 Unauthorized` | Authentication failed | Missing/expired JWT, invalid email or password |
+| `403 Forbidden` | Access denied | Attempting to access or alter another user's task |
+| `404 Not Found` | Resource not found | Task ID does not exist or unmatched API route |
+| `409 Conflict` | Duplicate resource | Registering an email that already exists |
+| `500 Server Error` | Unexpected failure | Internal database error (safely logged without leaking secrets) |
 
 ---
 
-## Postman Testing
+## 🧪 Postman Collection Testing
 
-### Import the Collection
+A complete Postman collection is included in the repository at:
+`backend/postman/Task-Management-API.postman_collection.json`
 
-1. Open Postman.
-2. Click **Import** (top-left).
-3. Select `postman/Task-Management-API.postman_collection.json`.
-4. The collection appears in your sidebar.
-
-### Quick Start Test Flow
-
-1. **Health Check** — verify the server is running.
-2. **Register** — creates your account and auto-saves the JWT token.
-3. **Login** — logs in and refreshes the saved JWT token.
-4. **Create Task** — creates a task and saves the task ID.
-5. **List Tasks** — view all your tasks.
-6. **Get Task by ID** — view the task you created.
-7. **Update Task** — change the status to `completed`.
-8. **Delete Task** — remove the task.
-9. **Error Cases** — test validation and 404 responses.
-
-> The "Register" and "Login" requests include **test scripts** that automatically save the token to the `authToken` collection variable. All protected requests use `{{authToken}}` automatically.
+### How to Use:
+1. Open **Postman**.
+2. Click **Import** and select `backend/postman/Task-Management-API.postman_collection.json`.
+3. The collection has pre-configured variables:
+   - `baseUrl`: `http://localhost:5000`
+   - `authToken`: (dynamically set upon login/register)
+4. Run the **Auth > Register** or **Auth > Login** request. The test script will **automatically store the JWT token** into `authToken`.
+5. Run any of the **Tasks** endpoints — they will automatically include the token in the `Authorization: Bearer {{authToken}}` header!
 
 ---
 
-## Task Fields
+## 🏗️ Production Build Instructions
 
-| Field         | Type    | Required | Description                                      |
-|---------------|---------|----------|--------------------------------------------------|
-| `title`       | string  | Yes      | Task title (max 255 chars)                       |
-| `description` | string  | No       | Optional details (max 1000 chars)                |
-| `status`      | string  | No       | `pending` (default), `in-progress`, `completed`  |
-| `priority`    | string  | No       | `low`, `medium` (default), `high`                |
-| `dueDate`     | string  | No       | ISO 8601 date (e.g. `2025-12-31`)                |
-
----
-
-## Troubleshooting
-
-**`Error: Cannot find module 'better-sqlite3'`**
+To build the React frontend for production deployment:
 ```bash
-npm install
+cd frontend
+npm run build
 ```
+The optimized static bundle will be generated in `frontend/dist/`.
 
-**`Error: JWT_SECRET is not defined`**
-- Make sure you created `.env` from `.env.example` and set `JWT_SECRET`.
-
-**`Port 5000 is already in use`**
-- Change `PORT=5001` in `.env`, or kill the process using port 5000.
-
-**`401 Unauthorized` on protected endpoints**
-- Run the Login request first so the token is saved to `{{authToken}}`.
-- Check that the token hasn't expired (default: 1 day).
-
-**SQLite database issues**
-- Delete `data/tasks.db` and restart the server — it will be recreated fresh.
-
-**`better-sqlite3` build error on Windows**
+To preview the production bundle locally:
 ```bash
-npm install --global windows-build-tools
-npm install
-```
-Or install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/).
-
----
-
-## Project Structure
-
-```
-task-management-api/
-├── src/
-│   ├── config/
-│   │   └── db.js                 # SQLite connection + table creation
-│   ├── controllers/
-│   │   ├── authController.js     # Register, login, getMe
-│   │   └── taskController.js     # CRUD task operations
-│   ├── middleware/
-│   │   ├── authMiddleware.js     # JWT verification
-│   │   ├── errorMiddleware.js    # Global error handler + 404
-│   │   └── validateRequest.js   # express-validator runner
-│   ├── routes/
-│   │   ├── authRoutes.js
-│   │   └── taskRoutes.js
-│   ├── validators/
-│   │   ├── authValidators.js
-│   │   └── taskValidators.js
-│   ├── app.js                   # Express app setup
-│   └── server.js                # Entry point
-├── data/
-│   └── tasks.db                 # Created automatically (git-ignored)
-├── postman/
-│   └── Task-Management-API.postman_collection.json
-├── .env.example
-├── .gitignore
-├── package.json
-└── README.md
+npm run preview
 ```
 
 ---
 
-## Publishing to GitHub
+## 🌐 Deployment Guidelines
 
-> ⚠️ Review all files before pushing. The `.gitignore` excludes `.env` and `data/tasks.db` — never commit those.
+### Backend Deployment (e.g. Render, Railway, Fly.io)
+1. Set the root directory or working directory to `backend`.
+2. Set Build Command: `npm install`
+3. Set Start Command: `npm start`
+4. Configure Environment Variables:
+   - `NODE_ENV=production`
+   - `PORT=5000` (or host provided port)
+   - `JWT_SECRET=your_super_secret_production_key`
+   - `JWT_EXPIRES_IN=7d`
+5. Ensure persistent disk storage is mounted for the `backend/data` directory so SQLite data persists across redeploys.
 
-```bash
-# 1. Initialize a git repository
-git init
-
-# 2. Add all files
-git add .
-
-# 3. Commit
-git commit -m "feat: initial CRUD REST API with JWT authentication and SQLite"
-
-# 4. Create a new repository on GitHub (https://github.com/new)
-#    Do NOT initialize it with a README
-
-# 5. Link your local repo to GitHub (replace with your details)
-git remote add origin https://github.com/YOUR_USERNAME/task-management-api.git
-
-# 6. Push to GitHub
-git branch -M main
-git push -u origin main
-```
-
-### Make the repository public for your internship submission:
-1. Go to your repository on GitHub.
-2. Click **Settings** → **General** → scroll to **Danger Zone**.
-3. Click **Change repository visibility** → **Make public**.
+### Frontend Deployment (e.g. Vercel, Netlify)
+1. Set root directory to `frontend`.
+2. Set Build Command: `npm run build`
+3. Set Output Directory: `dist`
+4. Configure Environment Variable:
+   - `VITE_API_BASE_URL=https://your-deployed-backend-url.com`
+5. Configure single-page application (SPA) rewrites so all routes point to `index.html`.
 
 ---
 
-## Security Notes
+## 📋 Verification & Testing Results
 
-- Passwords are hashed with bcrypt (12 salt rounds) — plain-text passwords are never stored.
-- JWTs contain only the user ID — no sensitive data.
-- All SQL queries use parameterized statements — SQL injection is prevented.
-- Task ownership is enforced at the database level (`WHERE id = ? AND userId = ?`).
-- Secrets and the database file are excluded from Git via `.gitignore`.
+| Test Category | Test Case | Expected Result | Actual Result | Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **Backend** | Server Startup | Connects to SQLite & listens on port 5000 | Port 5000 active, DB initialized | ✅ Passed |
+| **Backend** | Health Check | `GET /api/health` returns 200 | Returns `{ success: true }` | ✅ Passed |
+| **Backend** | User Registration | `POST /api/auth/register` creates user & token | HTTP 201 + valid JWT | ✅ Passed |
+| **Backend** | Duplicate Email | Re-registering existing email | HTTP 409 Conflict | ✅ Passed |
+| **Backend** | Authentication Guard | Accessing `/api/tasks` without token | HTTP 401 Unauthorized | ✅ Passed |
+| **Backend** | CRUD Operations | Create, read, update, delete tasks | HTTP 201, 200 with data isolation | ✅ Passed |
+| **Frontend** | Build Integrity | `npm run build` runs Vite build | 38 modules transformed, 0 errors | ✅ Passed |
+| **Frontend** | Route Protection | Direct visit to `/dashboard` while unauthenticated | Redirects to `/login` | ✅ Passed |
+| **Frontend** | User Registration | Valid registration through React form | Account created, auto logged in | ✅ Passed |
+| **Frontend** | Task Creation | Form validation & POST to `/api/tasks` | Task created, navigated to details | ✅ Passed |
+| **Frontend** | Task Edit & Update | Prefilled form & PUT to `/api/tasks/:id` | Data updated, redirected with new title | ✅ Passed |
+| **Frontend** | Task Deletion | Modal dialog confirmation & DELETE request | Record deleted, list updated | ✅ Passed |
+| **Frontend** | Responsive Design | 375px mobile viewport testing | Hamburger nav works, 0 overflow | ✅ Passed |
+| **Frontend** | Session Management | Logout & re-login flow | Token cleared, re-authenticated smoothly | ✅ Passed |
+
+---
+
+## 👩‍💻 Author & Submission
+- **Intern Name**: Sharanya
+- **Repository**: [https://github.com/durusojusharanya-ux/crud](https://github.com/durusojusharanya-ux/crud)
+- **Internship Project Submission**: Task 2 (REST API Backend) + Task 3 (React Frontend)
