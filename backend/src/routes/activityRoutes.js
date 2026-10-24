@@ -1,11 +1,10 @@
-// src/routes/activityRoutes.js
 import { Router } from 'express';
-import { getActivities } from '../controllers/activityController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { getRecentActivities } from '../controllers/activityController.js';
+import { requireAuth } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
-// GET /api/activities — protected
-router.get('/', protect, getActivities);
+router.use(requireAuth);
+router.get('/', getRecentActivities);
 
 export default router;

@@ -2,7 +2,7 @@
 // Centralised API client — all fetch logic lives here.
 // Reads the backend URL from the Vite environment variable VITE_API_BASE_URL.
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
 
 function getAuthHeader() {
   const token = localStorage.getItem('token');

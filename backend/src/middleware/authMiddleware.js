@@ -5,7 +5,7 @@ import { getDb } from '../config/db.js';
  * Protect routes by verifying the JWT from the Authorization header.
  * On success, attaches req.userId so controllers never trust client-supplied IDs.
  */
-export function protect(req, res, next) {
+export async function protect(req, res, next) {
   try {
     const authHeader = req.headers.authorization;
 
@@ -21,7 +21,10 @@ export function protect(req, res, next) {
     // Verify signature and expiration
     let decoded;
     try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
+      decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || 'taskflow_jwt_secret_production_key_2026'
+      );
     } catch (err) {
       if (err.name === 'TokenExpiredError') {
         return res.status(401).json({
@@ -37,9 +40,7 @@ export function protect(req, res, next) {
 
     // Confirm the user still exists in the database
     const db = getDb();
-    const user = db
-      .prepare('SELECT id FROM users WHERE id = ?')
-      .get(decoded.id);
+    const user = await db.get('SELECT id FROM users WHERE id = ?', [decoded.id]);
 
     if (!user) {
       return res.status(401).json({
@@ -55,3 +56,5 @@ export function protect(req, res, next) {
     next(error);
   }
 }
+
+export const requireAuth = protect;

@@ -1,16 +1,30 @@
 {
   "name": "task-management-api",
   "version": "1.0.0",
-  "description": "A CRUD REST API with User Authentication using Node.js, Express, and SQLite",
+  "description": "Full-Stack TaskFlow CRUD REST API with JWT Authentication and PostgreSQL/SQLite Persistence",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-sqlite src/server.js",
-    "dev": "nodemon --exec \"node --experimental-sqlite\" src/server.js",
-    "test": "node --experimental-sqlite --test test/api.test.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node scripts/migrate.js",
+    "db:migrate": "node scripts/migrate.js",
+    "db:test": "node scripts/migrate.js",
+    "test": "node scripts/test-crud.js",
+    "test:api": "node scripts/test-crud.js"
   },
-  "keywords": ["api", "crud", "express", "sqlite", "jwt", "authentication"],
-  "author": "",
+  "keywords": [
+    "api",
+    "crud",
+    "express",
+    "postgresql",
+    "sqlite",
+    "jwt",
+    "authentication",
+    "render",
+    "full-stack"
+  ],
+  "author": "Sharanya",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -18,7 +32,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getDb } from '../config/db.js';
+import { getDb, logActivity } from '../config/db.js';
 
 /**
  * Generate a signed JWT for the given user id.
@@ -8,8 +8,8 @@ import { getDb } from '../config/db.js';
 function generateToken(userId) {
   return jwt.sign(
     { id: userId },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
+    process.env.JWT_SECRET || 'taskflow_jwt_secret_production_key_2026',
+    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
   );
 }
 
@@ -17,11 +17,12 @@ function generateToken(userId) {
  * Strip the password field from a user row before returning it to the client.
  */
 function safeUser(user) {
+  if (!user) return null;
   const { password, ...safe } = user;
   return safe;
 }
 
-// ─── POST /api/auth/register ─────────────────────────────────────────────────
+// ─── POST /api/auth/register ──────────────────────────────────────────────────
 export async function register(req, res, next) {
   try {
     const { name, email, password } = req.body;
@@ -31,7 +32,7 @@ export async function register(req, res, next) {
     const normalizedEmail = email.trim().toLowerCase();
 
     // Check for duplicate email
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(normalizedEmail);
+    const existing = await db.get('SELECT id FROM users WHERE email = ?', [normalizedEmail]);
     if (existing) {
       return res.status(409).json({
         success: false,
@@ -44,22 +45,27 @@ export async function register(req, res, next) {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert the new user
-    const stmt = db.prepare(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)'
+    const result = await db.run(
+      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+      [name.trim(), normalizedEmail, hashedPassword]
     );
-    const result = stmt.run(name.trim(), normalizedEmail, hashedPassword);
     const userId = result.lastInsertRowid;
 
     // Retrieve the newly created user (without password)
-    const newUser = db.prepare('SELECT id, name, email, createdAt, updatedAt FROM users WHERE id = ?').get(userId);
+    const newUser = result.row
+      ? safeUser(result.row)
+      : await db.get('SELECT id, name, email, createdAt, updatedAt FROM users WHERE id = ?', [userId]);
 
     const token = generateToken(userId);
+
+    // Record audit activity
+    await logActivity(userId, 'USER_REGISTERED', `User account created: ${normalizedEmail}`);
 
     return res.status(201).json({
       success: true,
       message: 'Account created successfully.',
       data: {
-        user: newUser,
+        user: safeUser(newUser),
         token,
       },
     });
@@ -77,7 +83,7 @@ export async function login(req, res, next) {
     const normalizedEmail = email.trim().toLowerCase();
 
     // Look up user by email
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(normalizedEmail);
+    const user = await db.get('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -96,6 +102,9 @@ export async function login(req, res, next) {
 
     const token = generateToken(user.id);
 
+    // Record audit activity
+    await logActivity(user.id, 'USER_LOGIN', `User logged in`);
+
     return res.status(200).json({
       success: true,
       message: 'Logged in successfully.',
@@ -109,14 +118,15 @@ export async function login(req, res, next) {
   }
 }
 
-// ─── GET /api/auth/me ─────────────────────────────────────────────────────────
-export function getMe(req, res, next) {
+// ─── GET /api/auth/me ────────────────────────────────────────────────────────
+export async function getMe(req, res, next) {
   try {
     const db = getDb();
     // req.userId is attached by the auth middleware
-    const user = db
-      .prepare('SELECT id, name, email, createdAt, updatedAt FROM users WHERE id = ?')
-      .get(req.userId);
+    const user = await db.get(
+      'SELECT id, name, email, createdAt, updatedAt FROM users WHERE id = ?',
+      [req.userId]
+    );
 
     if (!user) {
       return res.status(401).json({
@@ -127,7 +137,7 @@ export function getMe(req, res, next) {
 
     return res.status(200).json({
       success: true,
-      data: { user },
+      data: { user: safeUser(user) },
     });
   } catch (error) {
     next(error);

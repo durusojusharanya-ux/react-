@@ -390,9 +390,39 @@ npm run preview
 
 ---
 
+## 🚀 Task 3: Full-Stack Deployment Guide
+
+### 1. Frontend Deployment on Vercel
+1. Log in to [Vercel](https://vercel.com/) with GitHub.
+2. Click **Add New...** ➔ **Project**.
+3. Import the repository: `durusojusharanya-ux/react-`.
+4. Configure Project Settings:
+   - **Framework Preset**: Vite
+   - **Root Directory**: `./` (or `frontend`) — `vercel.json` rewrites and build configs are included for both options!
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `frontend/dist` (or `dist` if Root Directory is set to `frontend`)
+5. Under **Environment Variables**, add:
+   - `VITE_API_BASE_URL` = `<Your deployed Render backend URL, e.g. https://taskflow-crud-api.onrender.com>`
+6. Click **Deploy**. Vercel will build and assign a public `https://<your-project>.vercel.app` URL.
+
+### 2. Backend Deployment on Render
+1. Log in to [Render](https://dashboard.render.com/) with GitHub.
+2. Click **New +** ➔ **Blueprint** (or **Web Service**).
+3. Select your repository: `durusojusharanya-ux/crud` (or `durusojusharanya-ux/react-` with rootDir `backend`).
+4. Set Environment Variables:
+   - `NODE_ENV` = `production`
+   - `JWT_SECRET` = `<Secure 32+ character random string>`
+   - `DATABASE_URL` = `<Hosted PostgreSQL connection string from Neon or Render>`
+   - `FRONTEND_URL` = `<Your Vercel URL, e.g. https://your-project.vercel.app>`
+5. Deploy the service. Test `GET https://your-backend.onrender.com/api/health`.
+
+---
+
 ## 👩‍💻 Author & Submission
 - **Intern Name**: Sharanya
-- **Repository**: [https://github.com/durusojusharanya-ux/react-](https://github.com/durusojusharanya-ux/react-)
+- **Frontend Repository**: [https://github.com/durusojusharanya-ux/react-](https://github.com/durusojusharanya-ux/react-)
+- **Backend Repository**: [https://github.com/durusojusharanya-ux/crud](https://github.com/durusojusharanya-ux/crud)
 - **Branch**: `main`
 - **Submission Date**: October 2026
-- **Readiness**: 100% Ready for Evaluation
+- **Readiness**: 100% Ready for Full-Stack Deployment & Evaluation
+
